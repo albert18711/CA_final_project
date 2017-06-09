@@ -82,12 +82,16 @@ module	TestBed(
 							nxtduration = duration + 1;
 							nxtaddr = curaddr;						
 							nxt_error_num = error_num;
-							$display("your answer = %d, correct is = %d", data, answer);
 							if( addr==`TestPort && wen && state==0 )
 							begin
 								nxtaddr = curaddr + 1;
 								if( data != answer ) begin
+									// $display("curstate = %d", curstate);
+									$display("your answer = %d, correct is = %d", data, answer);
 									nxt_error_num = error_num + 8'd1;
+								end
+								else begin
+									$display("your answer = %d, correct is = %d", data, answer);
 								end
 							end
 							nxtstate = curstate;
@@ -106,7 +110,6 @@ module	TestBed(
 
 	always@( negedge clk )						
 	begin
-		$display("curstate = %d", curstate);
 		if(curstate == state_report) begin
 			$display("--------------------------- Simulation FINISH !!---------------------------");
 			if (error_num) begin 

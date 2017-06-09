@@ -28,17 +28,17 @@ assign forwardB = (iRt_RegD == 0)? 0 : 1;
 
 always@ (*) begin//A
     oFU_ASel = 2'b00;
-	if((iRs_RegD == iwsel_RegE) & forwardA)//1
+	if((iRs_RegD == iwsel_RegE) & forwardA & iRegWrite_RegE)//1
         oFU_ASel = 2'b10;
-    else if((iRs_RegD == iwsel_RegM) & forwardA)//2
+    else if((iRs_RegD == iwsel_RegM) & forwardA & iRegWrite_RegM)//2
         oFU_ASel = 2'b01;
 end
 
 always@ (*) begin//B
     oFU_BSel = 2'b00;
-	if((iRt_RegD == iwsel_RegE) & forwardB)//1
+	if((iRt_RegD == iwsel_RegE) & forwardB & iRegWrite_RegE)//1
         oFU_BSel = 2'b10;
-    else if((iRt_RegD == iwsel_RegM) & forwardB)//2
+    else if((iRt_RegD == iwsel_RegM) & forwardB & iRegWrite_RegM)//2
         oFU_BSel = 2'b01;
 end
 

@@ -52,8 +52,8 @@ module MIPS_Pipeline (
 
 //========== IF ===================================================//
     reg  [1:0]  PCSrc;
-    reg  [29:0] PC_r, PC_w;
-    reg  [29:0] PCPlus4;
+    reg  [31:0] PC_r, PC_w;
+    reg  [31:0] PCPlus4;
     reg  [31:0] branch_addr;
     reg  [31:0] jump_addr;
 
@@ -226,13 +226,13 @@ module MIPS_Pipeline (
 // nextPCCalc: i/p {target_address, ExOut_RegE, addr_in}
     assign target_address = IR_RegF_r[25:0];
 	always @(*) begin
-		PCPlus4 = addr_in + 1;
-		branch_addr = addr_in + ExtOut_RegE_r;
-		jump_addr = target_address;
+		PCPlus4     = addr_in + 4;
+		branch_addr = addr_in + {ExtOut_RegE_r, 2'b00};
+		jump_addr   = {PC_r[31:28], target_address, 2'b00};
 	end
 
 // I Cache
-    assign ICACHE_addr = PC_r;
+    assign ICACHE_addr = PC_r[31:2];
     assign ICACHE_wen = 0;
     assign ICACHE_ren = 1;
 
