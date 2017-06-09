@@ -142,6 +142,9 @@ module	TestBed(
 		endcase
 	end
 	
+	always@( curstate ) begin
+		$display("curstate = %d", curstate);
+	end
 	
 	always@( curstate  or curaddr)	// ROM for correct result
 	begin

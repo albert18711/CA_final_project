@@ -19,7 +19,7 @@ module register_file(
 
 always @ (*) begin
 	//register[0] = 0; //not sure where to put it...
-	if(RX == RW) begin
+	if(RX == RW && RX != 0) begin
 		busX = busW;
 	end
 	else begin
@@ -58,7 +58,7 @@ always @ (*) begin
 			default: busX = 0;
 		endcase
 	end
-	if(RY == RW) begin
+	if(RY == RW && RY != 0) begin
 		busY = busW;
 	end
 	else begin
