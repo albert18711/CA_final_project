@@ -227,7 +227,7 @@ module MIPS_Pipeline (
     assign target_address = IR_RegF_r[25:0];
 	always @(*) begin
 		PCPlus4     = addr_in + 4;
-		branch_addr = addr_in + {ExtOut_RegE_r, 2'b00};
+		branch_addr = addr_in + 4 + {ExtOut_RegE_r, 2'b00};
 		jump_addr   = {PC_r[31:28], target_address, 2'b00};
 	end
 
@@ -325,6 +325,7 @@ module MIPS_Pipeline (
             2'b00: wsel_RegD_w = Rt;
             2'b01: wsel_RegD_w = Rd;
             2'b10: wsel_RegD_w = 31; // for jal
+            2'b11: wsel_RegD_w = Rs;
             default : wsel_RegD_w = wsel_RegD_r;
         endcase
     end

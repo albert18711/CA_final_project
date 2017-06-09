@@ -21,24 +21,29 @@ input [4:0] iwsel_RegM;
 output reg [1:0] oFU_ASel;
 output reg [1:0] oFU_BSel;
 
-wire forwardA, forwardB;
+wire common_condi_1;
 
-assign forwardA = (iRs_RegD == 0)? 0 : 1;
-assign forwardB = (iRt_RegD == 0)? 0 : 1;
+assign common_condi_1 = (iwsel_RegE != 0);
 
 always@ (*) begin//A
     oFU_ASel = 2'b00;
-	if((iRs_RegD == iwsel_RegE) & forwardA & iRegWrite_RegE)//1
+	if((iRs_RegD == iwsel_RegE) & common_condi_1 & iRegWrite_RegE)//1
         oFU_ASel = 2'b10;
-    else if((iRs_RegD == iwsel_RegM) & forwardA & iRegWrite_RegM)//2
+    else if(iRegWrite_RegM &
+            (iwsel_RegM != 0) &
+            ~(iRegWrite_RegE & (iwsel_RegE != 0) & (iwsel_RegE != iRs_RegD)) &
+            (iwsel_RegM == iRs_RegD)) //2
         oFU_ASel = 2'b01;
 end
 
 always@ (*) begin//B
     oFU_BSel = 2'b00;
-	if((iRt_RegD == iwsel_RegE) & forwardB & iRegWrite_RegE)//1
+	if((iRt_RegD == iwsel_RegE) & common_condi_1 & iRegWrite_RegE)//1
         oFU_BSel = 2'b10;
-    else if((iRt_RegD == iwsel_RegM) & forwardB & iRegWrite_RegM)//2
+    else if(iRegWrite_RegM &
+            (iwsel_RegM != 0) &
+            ~(iRegWrite_RegE & (iwsel_RegE != 0) & (iwsel_RegE != iRs_RegD)) &
+            (iwsel_RegM == iRs_RegD)) //2
         oFU_BSel = 2'b01;
 end
 

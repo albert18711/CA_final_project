@@ -57,6 +57,8 @@ end
 always@ (*) begin //RegDST
 	if(iIR_opcode == 0) 	 oRegDST = 2'b01;
 	else if(iIR_opcode == 3) oRegDST = 2'b10;
+	else if(iIR_opcode == 0 && iIR_func == 8)
+							 oRegDST = 2'b11; // JR
 	else 					 oRegDST = 2'b00;
 end
 
