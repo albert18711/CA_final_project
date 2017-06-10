@@ -42,8 +42,8 @@ always@ (*) begin//B
         oFU_BSel = 2'b10;
     else if(iRegWrite_RegM &
             (iwsel_RegM != 0) &
-            ~(iRegWrite_RegE & (iwsel_RegE != 0) & (iwsel_RegE != iRs_RegD)) &
-            (iwsel_RegM == iRs_RegD)) //2
+            ~(iRegWrite_RegE & (iwsel_RegE != 0) & (iwsel_RegE != iRt_RegD)) &
+            (iwsel_RegM == iRt_RegD)) //2
         oFU_BSel = 2'b01;
 end
 
