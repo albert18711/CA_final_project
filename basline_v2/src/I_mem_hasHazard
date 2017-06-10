@@ -44,9 +44,9 @@
 000100_00101_000000000000000000010   //beq  $5  $0  2              beq     r5, r0, SwapExit                       
 101011_00001_0010000000_00000_000000 //sw   $4  $1   0000          sw      r4, r1, 0x0000                         
 101011_00001_0001100000_00000_000100 //sw   $3  $1   0004          sw      r3, r1, 0x0004                         
-001000_00001_0000100000_00000_000100 //add  $1  $1   0004          add     r1, r1, 0x0004                         
+001000_00001_0000100000_00000_000100 //addi $1  $1   0004          add     r1, r1, 0x0004                         
 000010_00000_000000000000000100111   //j     27                    j       BubbleInLoop                           
-001000_00111_0011111111_11111_111100 //sub  $7  $7  0004           sub     r7, r7, 0x0004                         
+001000_00111_0011111111_11111_111100 //subi $7  $7  0004           sub     r7, r7, 0x0004                         
 000010_00000_000000000000000100101   //j     25                    j       BubbleOutLoop                          
 000000_00000_0000000001_00000_100000 //add  $1  $0   $0            add     r1, r0, r0                             
 001000_00000_001110000000001000000   //addi $7  $0   0x0040        addi    r7, r0, 64       ( modify3 for r7 = 4*number = 64 )     
@@ -104,13 +104,13 @@
 //	0x27	BubbleInLoop:           beq     r1, r7, BubbleInLoopExit   	// r1 for source address                               
 //	0x28	                        lw      r3, r1, 0x0000             	// r3 for temp value 1, r3=MEM[r1]                     
 //	0x29	                        lw      r4, r1, 0x0004		       	// r4 for temp value 2, r4=MEM[r1+4]  
-//	0x2A	                        slt     r5, r3, r4                 	// r5 for flag: r4 < r3 ? 32'd1: 32'd0
+//	0x2A	                        slt     r5, r3, r4                 	// r5 for flag: r3 < r4 ? 32'd1: 32'd0
 //	0x2B	                        beq     r5, r0, SwapExit           	// r7 for finished bound              
 //	0x2C	Swap:                   sw      r4, r1, 0x0000
 //	0x2D	                        sw      r3, r1, 0x0004
-//	0x2E	SwapExit:               add     r1, r1, 0x0004
+//	0x2E	SwapExit:               addi    r1, r1, 0x0004
 //	0x2F	                        j       BubbleInLoop
-//	0x30	BubbleInLoopExit:       sub     r7, r7, 0x0004
+//	0x30	BubbleInLoopExit:       subi    r7, r7, 0x0004
 //	0x31	                        j       BubbleOutLoop
 //	0x32	BubbleOutLoopExit:      add     r1, r0, r0
 //	0x33	                        addi    r7, r0, 0x0040                                        ( modify3 for r7 = 4*number = 64 )

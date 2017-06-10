@@ -37,7 +37,7 @@ output reg      oPCEnable;
 
 wire forward2, stall, beq_secc;
 
-assign forward2 = ( iInstruction[25:21] == iRt_RegD || iInstruction[20:16] == iRt_RegD );
+assign forward2 = ( iInstruction[25:11] == iRt_RegD || iInstruction[20:16] == iRt_RegD );
 assign stall = ((iload_RegD == 2'b01) && forward2);
 assign beq_secc = iBranch_RegE & izero_RegE;
 
@@ -52,12 +52,17 @@ always@ (*) begin//C
     oflushdecex = 0;
     oflushexmem = 0;
 
-    if(beq_secc|iJR_RegE) begin
+    if(iJR_RegE | beq_secc) begin
         oflushifdec = 1;
         oflushdecex = 1;
-        // oflushexmem = 1;
+        oflushexmem = 1;
     end
-    if(iJAL|iJump) begin
+    // if(beq_secc) begin
+    //     oflushifdec = 1;
+    //     oflushdecex = 1;
+    //     oflushexmem = 1;
+    // end
+    else if(iJAL|iJump) begin
         oflushifdec = 1;
         // oflushdecex = 1;        
     end
