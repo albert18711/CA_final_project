@@ -12,8 +12,7 @@ module cache(
     mem_addr,
     mem_rdata,
     mem_wdata,
-    mem_ready,
-    miss_counter
+    mem_ready
 );
     
 //==== input/output definition ============================
@@ -31,7 +30,6 @@ module cache(
     output         mem_read, mem_write;
     output  [27:0] mem_addr;
     output [127:0] mem_wdata;
-    output [31:0]  miss_counter;
     
 //==== wire/reg definition ================================
     wire [1:0]  i_block_offset;
@@ -126,7 +124,7 @@ module cache(
                 if(~hit) begin
                     state_w = S_MISS;
                     proc_stall_reg = 1;
-                    miss_counter_w = miss_counter_r + 1;
+                    // miss_counter_w = miss_counter_r + 1;
                     if(valid_bit_r[i_cache_index] & dirty_bit_r[i_cache_index]) begin
                         mem_read_w = 0;
                         mem_write_w = 1;
@@ -243,7 +241,7 @@ always@( posedge clk or posedge proc_reset ) begin
         mem_addr_r <= 0;
         mem_wdata_r <= 0;
         state_r <= S_HIT;
-        miss_counter_r <= 0;
+        // miss_counter_r <= 0;
     end
     else begin
         for (i = 0; i < 8; i = i+1) begin
@@ -257,7 +255,7 @@ always@( posedge clk or posedge proc_reset ) begin
         mem_read_r <= mem_read_w;
         mem_addr_r <= mem_addr_w;
         mem_wdata_r <= mem_wdata_w;
-        miss_counter_r <= miss_counter_w;
+        // miss_counter_r <= miss_counter_w;
     end
 end
 

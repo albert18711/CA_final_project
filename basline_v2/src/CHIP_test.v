@@ -1,3 +1,5 @@
+`include "i_MIPS.v"
+`include "cache_dirtyBit.v"
 // Top module of your design, you cannot modify this module!!
 module CHIP (	clk,
 				rst_n,
@@ -81,7 +83,7 @@ wire [31:0] DCACHE_rdata;
 		DCACHE_addr,
 		DCACHE_wdata,
 		DCACHE_stall,
-		DCACHE_rdata,
+		DCACHE_rdata
 	);
 	
 	cache D_cache(
@@ -118,17 +120,7 @@ wire [31:0] DCACHE_rdata;
 		mem_ready_I
 	);
 
-	always @(posedge clk or negedge rst_n) begin
-		if(~ICACHE_stall) begin
-			$display("inst addr = %d", ICACHE_addr);
-			$display("inst = %b", ICACHE_rdata);
-		end
-	end
 
-	always @(posedge DCACHE_wen) begin
-		$display("DCACHE addr = %d", DCACHE_addr);
-		$display("DCACHE_wdata = %d", DCACHE_wdata);
-	end
 	
 endmodule
 

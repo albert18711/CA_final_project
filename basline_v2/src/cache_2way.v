@@ -46,7 +46,7 @@ module cache(
 	reg way, next_way; //2 way: 0 and 1
 	wire [1:0] set; //4 sets, set = index[2:1]
 	wire valid_0, valid_1;
-	wire dirty;
+	wire dirty_0, dirty_1;
 	
 	reg [3:0] LRUbit, next_LRUbit;
 	//LRUbit[0] = 1, when set0's way1 is older than way0.
@@ -81,7 +81,9 @@ assign offset = proc_addr[1:0];
 assign index = proc_addr[4:2]; //use for write to mem's mem_addr
 assign set = proc_addr[4:3];
 assign tag = {proc_addr[2], proc_addr[29:5]};
-assign dirty = cache_block[154];
+
+assign dirty_0 = cache_way0[set][154];
+assign dirty_1 = cache_way1[set][154];
 
 assign valid_0 = cache_way0[set][155];
 assign valid_1 = cache_way1[set][155];
@@ -121,7 +123,7 @@ end
 always@(*) begin
 	if(proc_reset) begin
 		reg_proc_stall = 0;
-	end else if((state == S_READ_FROM_MEM) || (state == S_WRITE_TO_MEM) || (state == S_IDLE)) begin
+	end else if((next_state == S_READ_FROM_MEM) || (next_state == S_WRITE_TO_MEM) || (state == S_READ_FROM_MEM)) begin
 		reg_proc_stall = 1;
 	end else begin
 		reg_proc_stall = 0;
@@ -155,7 +157,7 @@ end
 always@(*) begin
 	if(proc_reset) begin
 		reg_mem_wdata = 0;
-	end else if((state == S_WRITE_TO_MEM) || (state == S_WRITE)) begin
+	end else if(state == S_WRITE_TO_MEM) begin //XXX S_WRITE
 		reg_mem_wdata = cache_block[127:0];
 	end else begin
 		reg_mem_wdata = 0; // = current data ???
@@ -165,7 +167,7 @@ end
 always@(*) begin
 	if(proc_reset) begin
 		next_way = 0;
-	end else if(state == S_IDLE) begin
+	end else if((state == S_READ) || (state == S_WRITE)) begin
 		if     (TAG_SAME_0 && valid_0) next_way = 0; // hit way 0 
 		else if(TAG_SAME_1 && valid_1) next_way = 1; // hit way 1
 		else if(LRUbit[set])		   next_way = 1; // miss, change way 1
@@ -193,9 +195,27 @@ end
 
 always@(*) begin //valid, dirty
 	//cache_block = cache[index];
+		if(next_way) begin //way = 1
+			case(index)
+				0,1: cache_block = cache_way1[0];
+				2,3: cache_block = cache_way1[1];
+				4,5: cache_block = cache_way1[2];
+				6,7: cache_block = cache_way1[3];
+				default: cache_block = cache_way1[set]; //?????
+			endcase
+		end else begin //way = 0
+			case(index)
+				0,1: cache_block = cache_way0[0];
+				2,3: cache_block = cache_way0[1];
+				4,5: cache_block = cache_way0[2];
+				6,7: cache_block = cache_way0[3];
+				default: cache_block = cache_way0[set]; //?????
+			endcase
+		end
+	//
 	if(proc_reset) begin
 		cache_block = 0;
-	end else if(state == S_WRITE) begin
+	end else if((state == S_WRITE) && (~proc_stall)) begin
 		cache_block[155] = 1;
 		cache_block[154] = 1;
 		case(offset)
@@ -247,13 +267,13 @@ always@(*) begin
 		next_state = S_IDLE;
 	end else begin
 		case(state)
-			S_IDLE: begin
+			S_IDLE, S_READ, S_WRITE: begin
 				if((TAG_SAME_0 && valid_0) || (TAG_SAME_1 && valid_1)) begin //hit
 					if(proc_read) next_state = S_READ;
 					else if(proc_write) next_state = S_WRITE;
 					else next_state = state;
 				end else begin
-					if(dirty) next_state = S_WRITE_TO_MEM;
+					if(((next_way == 0) && dirty_0) || (next_way) && dirty_1) next_state = S_WRITE_TO_MEM;
 					else next_state = S_READ_FROM_MEM;
 				end
 			end
@@ -267,7 +287,7 @@ always@(*) begin
 					else if(proc_write) next_state = S_WRITE;
 				end else next_state = state;
 			end
-			default: next_state = S_IDLE;
+			default: next_state = state;
 		endcase
 	end
 end

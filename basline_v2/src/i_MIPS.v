@@ -22,7 +22,7 @@ module MIPS_Pipeline (
 		DCACHE_addr,
 		DCACHE_wdata,
 		DCACHE_stall,
-		DCACHE_rdata,
+		DCACHE_rdata
 
 		);
 
@@ -616,16 +616,16 @@ module MIPS_Pipeline (
 
 //========== WB ===================================================//
 // debug
-    always @(*) begin
-        if(wsel_RegM_r == 29 && RegWrite_RegM_r == 1) begin
-            $display("write to $29, addr = %d", PC_r);
-            $display("value = %h", WriteData);
-        end
-        if(JR && Rs == 29) begin
-            $display("JR to $29, addr = %h", ICACHE_addr);
-            $display("value = %h", A);
-        end
-    end
+    // always @(*) begin
+    //     if(wsel_RegM_r == 29 && RegWrite_RegM_r == 1) begin
+    //         $display("write to $29, addr = %d", PC_r);
+    //         $display("value = %h", WriteData);
+    //     end
+    //     if(JR && Rs == 29) begin
+    //         $display("JR to $29, addr = %h", ICACHE_addr);
+    //         $display("value = %h", A);
+    //     end
+    // end
 
 
 endmodule
