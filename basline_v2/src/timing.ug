@@ -1,0 +1,73 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'CHIP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : CHIP
+Version: G-2012.06
+Date   : Sun Jun 11 23:31:57 2017
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: i_MIPS/Rs_RegD_r_reg[4]
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: i_MIPS/alu_out_RegE_r_reg[10]
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CHIP               tsmc13_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  i_MIPS/Rs_RegD_r_reg[4]/CK (DFFRX4)                     0.00 #     0.50 r
+  i_MIPS/Rs_RegD_r_reg[4]/Q (DFFRX4)                      0.32       0.82 f
+  U9400/Y (XNOR2X4)                                       0.11       0.93 f
+  U9397/Y (NAND4X4)                                       0.10       1.03 r
+  U9395/Y (NOR2X6)                                        0.06       1.09 f
+  U9394/Y (NAND2X8)                                       0.08       1.17 r
+  U9393/Y (CLKBUFX20)                                     0.12       1.28 r
+  U9506/Y (NAND2X6)                                       0.06       1.34 f
+  U9306/Y (BUFX16)                                        0.09       1.43 f
+  U18046/Y (OAI222X4)                                     0.36       1.79 r
+  U8222/Y (INVX12)                                        0.06       1.85 f
+  U9003/Y (CLKINVX16)                                     0.05       1.90 r
+  i_MIPS/ALU/srl_49/SH[2] (CHIP_DW_rightsh_2)             0.00       1.90 r
+  i_MIPS/ALU/srl_49/U528/Y (CLKBUFX2)                     0.15       2.05 r
+  i_MIPS/ALU/srl_49/U293/Y (CLKBUFX8)                     0.27       2.32 r
+  i_MIPS/ALU/srl_49/U327/Y (MXI2X2)                       0.19       2.51 f
+  i_MIPS/ALU/srl_49/U326/Y (NAND2BX1)                     0.19       2.70 r
+  i_MIPS/ALU/srl_49/U521/Y (MXI2X1)                       0.13       2.83 f
+  i_MIPS/ALU/srl_49/U407/Y (NOR2BX2)                      0.15       2.98 f
+  i_MIPS/ALU/srl_49/B[10] (CHIP_DW_rightsh_2)             0.00       2.98 f
+  U8821/Y (AND2X2)                                        0.14       3.12 f
+  U9201/Y (NOR4X4)                                        0.16       3.28 r
+  U10557/Y (NAND4X2)                                      0.08       3.36 f
+  i_MIPS/alu_out_RegE_r_reg[10]/D (DFFRX4)                0.00       3.36 f
+  data arrival time                                                  3.36
+
+  clock CLK (rise edge)                                   3.00       3.00
+  clock network delay (ideal)                             0.50       3.50
+  clock uncertainty                                      -0.10       3.40
+  i_MIPS/alu_out_RegE_r_reg[10]/CK (DFFRX4)               0.00       3.40 r
+  library setup time                                     -0.04       3.36
+  data required time                                                 3.36
+  --------------------------------------------------------------------------
+  data required time                                                 3.36
+  data arrival time                                                 -3.36
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1

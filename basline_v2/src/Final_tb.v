@@ -17,6 +17,10 @@
 	`define IMEM_INIT "I_mem_hasHazard"
 	`include "./TestBed_hasHazard.v"
 `endif	
+`ifdef selfGen
+	`define IMEM_INIT "I_mem_selfGen"
+	`include "./TestBed_selfGen.v"
+`endif
 `ifdef BrPred
 	`define IMEM_INIT "I_mem_BrPred"
 	`include "./TestBed_BrPred.v"

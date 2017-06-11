@@ -155,8 +155,8 @@ module MIPS_Pipeline (
     wire [31:0] alu_out_RegE_w;
     reg  [31:0] B_RegE_r;
     wire [31:0] B_RegE_w; // after FU_BSel
-    reg  [31:0] ExtOut_RegE_r;
-    wire [31:0] ExtOut_RegE_w;
+    // reg  [31:0] ExtOut_RegE_r; // replace with branch_addr
+    // wire [31:0] ExtOut_RegE_w;
     // wire [4:0]  wsel_RegE;
     reg  [4:0]  wsel_RegE_r;
     wire [4:0]  wsel_RegE_w;
@@ -498,7 +498,7 @@ module MIPS_Pipeline (
     assign MemWrite_RegE_w      = MemWrite_RegD_r;
     assign alu_out_RegE_w       = alu_out;
     assign B_RegE_w             = B_FUSel;
-    assign ExtOut_RegE_w        = {ExtOut_RegD_r[15:2], 2'b0};
+    // assign ExtOut_RegE_w        = {ExtOut_RegD_r[15:2], 2'b0};
     assign RegWrite_RegE_w      = RegWrite_RegD_r;
     assign wsel_RegE_w          = wsel_RegD_r;
     assign branch_addr_RegE_w   = branch_addr_RegD_r;
@@ -512,7 +512,7 @@ module MIPS_Pipeline (
             MemWrite_RegE_r     <= 0;
             alu_out_RegE_r      <= 0;
             B_RegE_r            <= 0;
-            ExtOut_RegE_r       <= 0;
+            // ExtOut_RegE_r       <= 0;
             RegWrite_RegE_r     <= 0;
             wsel_RegE_r         <= 0;
             branch_addr_RegE_r  <= 0;
@@ -524,7 +524,7 @@ module MIPS_Pipeline (
             MemWrite_RegE_r     <= MemWrite_RegE_r;
             alu_out_RegE_r      <= alu_out_RegE_r;
             B_RegE_r            <= B_RegE_r;
-            ExtOut_RegE_r       <= ExtOut_RegE_r;
+            // ExtOut_RegE_r       <= ExtOut_RegE_r;
             RegWrite_RegE_r     <= RegWrite_RegE_r;
             wsel_RegE_r         <= wsel_RegE_r;
             branch_addr_RegE_r  <= branch_addr_RegE_r;
@@ -536,7 +536,7 @@ module MIPS_Pipeline (
             MemWrite_RegE_r     <= 0;
             alu_out_RegE_r      <= 0;
             B_RegE_r            <= 0;
-            ExtOut_RegE_r       <= 0;
+            // ExtOut_RegE_r       <= 0;
             RegWrite_RegE_r     <= 0;
             wsel_RegE_r         <= 0;
             branch_addr_RegE_r  <= 0;
@@ -548,7 +548,7 @@ module MIPS_Pipeline (
             MemWrite_RegE_r     <= MemWrite_RegE_w;
             alu_out_RegE_r      <= alu_out_RegE_w;
             B_RegE_r            <= B_RegE_w;
-            ExtOut_RegE_r       <= ExtOut_RegE_w;
+            // ExtOut_RegE_r       <= ExtOut_RegE_w;
             RegWrite_RegE_r     <= RegWrite_RegE_w;
             wsel_RegE_r         <= wsel_RegE_w;
             branch_addr_RegE_r  <= branch_addr_RegE_w;
