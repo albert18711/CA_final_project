@@ -360,7 +360,7 @@ module MIPS_Pipeline (
     assign ExtOut_RegD_w      = ExtOut;
     assign JAL_RegD_w         = JAL;
     assign JR_RegD_w          = JR;
-    assign branch_addr_RegD_w = PCPlus4_RegF_r + {ExtOut[29:0], 2'b00};
+    assign branch_addr_RegD_w = PCPlus4_RegF_r + {{14{immediate[15]}}, immediate, 2'b00};
     always @(posedge clk or negedge rst_n) begin
         if(~rst_n) begin
             Branch_RegD_r       <= 0;
