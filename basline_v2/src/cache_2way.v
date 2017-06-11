@@ -268,13 +268,17 @@ always@(*) begin
 	end else begin
 		case(state)
 			S_IDLE, S_READ, S_WRITE: begin
-				if((TAG_SAME_0 && valid_0) || (TAG_SAME_1 && valid_1)) begin //hit
-					if(proc_read) next_state = S_READ;
-					else if(proc_write) next_state = S_WRITE;
-					else next_state = state;
+				if(proc_write || proc_read) begin
+					if((TAG_SAME_0 && valid_0) || (TAG_SAME_1 && valid_1)) begin //hit
+						if(proc_read) next_state = S_READ;
+						else if(proc_write) next_state = S_WRITE;
+						else next_state = state;
+					end else begin
+						if(((next_way == 0) && dirty_0) || (next_way) && dirty_1) next_state = S_WRITE_TO_MEM;
+						else next_state = S_READ_FROM_MEM;
+					end
 				end else begin
-					if(((next_way == 0) && dirty_0) || (next_way) && dirty_1) next_state = S_WRITE_TO_MEM;
-					else next_state = S_READ_FROM_MEM;
+					next_state = state;
 				end
 			end
 			S_WRITE_TO_MEM: begin
