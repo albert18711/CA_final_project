@@ -39,7 +39,7 @@ end
 always@ (*) begin //ALUOp
 	if(iIR_opcode == 0) oALUOp = 2'b01; // R type
 	else if(iIR_opcode == 8  || iIR_opcode == 12 || iIR_opcode == 13 ||
-		    iIR_opcode == 14 || iIR_opcode == 10) oALUOp = 2'b01; // I type 
+		    iIR_opcode == 14 || iIR_opcode == 10) oALUOp = 2'b11; // I type 
 	else if(iIR_opcode == 4) oALUOp = 2'b10;
 	else oALUOp = 2'b00;
 end

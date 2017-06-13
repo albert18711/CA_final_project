@@ -16,7 +16,7 @@ assign oJR = (iALUOp == 01 && iIR_func == 4'b1000)? 1 : 0;
 
 always@ (*) begin
 	if(iALUOp == 2'b00) oALUctrl = 0;
-	else if(iALUOp == 2'b10) oALUctrl = 1;
+	else if(iALUOp == 2'b10) oALUctrl = 1; // beq
 	else if(iALUOp == 2'b01) begin
 		case(iIR_func)
 			6'b100000: oALUctrl = 0; //add
@@ -32,7 +32,12 @@ always@ (*) begin
 			default: oALUctrl = 0;
 		endcase
 	end
-	else oALUctrl = 0;
+	else if(iALUOp == 2'b11) begin // I type
+		case (iIR_func) // actually is OP-field
+			
+			default : oALUctrl = 0;
+		endcase
+	end
 end
 
 endmodule

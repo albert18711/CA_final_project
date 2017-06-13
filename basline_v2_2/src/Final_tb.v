@@ -17,14 +17,6 @@
 	`define IMEM_INIT "I_mem_hasHazard"
 	`include "./TestBed_hasHazard.v"
 `endif	
-`ifdef selfGen
-	`define IMEM_INIT "I_mem_selfGen"
-	`include "./TestBed_selfGen.v"
-`endif
-`ifdef debug
-	`define IMEM_INIT "I_mem_debug"
-	`include "./TestBed_hasHazard.v"
-`endif
 `ifdef BrPred
 	`define IMEM_INIT "I_mem_BrPred"
 	`include "./TestBed_BrPred.v"
@@ -140,10 +132,10 @@ module Final_tb;
 		$readmemb (`IMEM_INIT, slow_memI.mem ); // initialize data in IMEM
 
 		// waveform dump
-	    $dumpfile("Final.vcd");
-	    $dumpvars;
-	    // $fsdbDumpfile("Final.fsdb");			
-		// $fsdbDumpvars(0,Final_tb,"+mda");
+	    // $dumpfile("Final.vcd");
+	    // $dumpvars;
+	    $fsdbDumpfile("Final.fsdb");			
+		$fsdbDumpvars(0,Final_tb,"+mda");
 	
 		clk = 0;
 		rst_n = 1'b1;

@@ -331,7 +331,7 @@ module MIPS_Pipeline (
             2'b00: wsel_RegD_w = Rt;
             2'b01: wsel_RegD_w = Rd;
             2'b10: wsel_RegD_w = 31; // for jal
-            2'b11: wsel_RegD_w = Rs;
+            2'b11: wsel_RegD_w = Rs; // for sll
             default : wsel_RegD_w = wsel_RegD_r;
         endcase
     end
@@ -352,7 +352,7 @@ module MIPS_Pipeline (
 // branch_addr
     // assign branch_addr = PCPlus4_RegF_r + ExtOut;
 //========== ID_EXE register ======================================//
-    assign funct_RegD_w       = IR_RegF_r[5:0];
+    assign funct_RegD_w       = IR_RegF_r[5:0]; // can use ExtOut instead
     assign Rs_RegD_w          = Rs;
     assign Rt_RegD_w          = Rt;
     assign A_RegD_w           = (JAL)? PCPlus4_RegF_r : A;
@@ -559,7 +559,7 @@ module MIPS_Pipeline (
 // D Cache
     assign DCACHE_wdata = B_RegE_r;
     assign data_out     = DCACHE_rdata;
-    assign DCACHE_addr = alu_out_RegE_r >> 2;
+    assign DCACHE_addr = alu_out_RegE_r[31:2];
     assign DCACHE_wen = MemWrite_RegE_r;
     assign DCACHE_ren = MemToReg_RegE_r; // MemToReg == MemRead
 
