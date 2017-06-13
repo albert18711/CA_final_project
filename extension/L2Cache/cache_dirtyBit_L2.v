@@ -236,7 +236,7 @@ module L2_Cache(
 //==== sequential circuit =================================
 always@( posedge clk or posedge reset ) begin
     if( reset ) begin
-        for (i = 0; i < 31; i = i+1) begin
+        for (i = 0; i < 32; i = i+1) begin
             valid_bit_r[i] <= 0;
             tag_r[i] <= 0;
             four_word_r[i] <= 0;
@@ -250,7 +250,7 @@ always@( posedge clk or posedge reset ) begin
         // miss_counter_r <= 0;
     end
     else begin
-        for (i = 0; i < 31; i = i+1) begin
+        for (i = 0; i < 32; i = i+1) begin
             valid_bit_r[i] <= valid_bit_w[i];
             tag_r[i] <= tag_w[i];
             four_word_r[i] <= four_word_w[i];
