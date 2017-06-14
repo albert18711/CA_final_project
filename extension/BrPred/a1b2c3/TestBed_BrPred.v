@@ -62,11 +62,16 @@ module	TestBed(
 							nxtaddr = 0;
 							nxtduration = 0;
 	
+							// $display("addr = %d", addr);
 							if( addr==`TestPort && data==`answer && wen )
 							begin
+								// $display("your answer = %d, answer = %d", data, `answer);
 								nxtstate = state_pass;
 							end	 	
-							else nxtstate = state_idle;
+							else begin
+								// $display("your answer = %d, answer = %d", data, `answer);
+								nxtstate = state_idle;
+							end
 						end
 		state_pass:	begin
 							finish = 1'b1;
