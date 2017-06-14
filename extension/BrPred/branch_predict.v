@@ -17,15 +17,18 @@ input izero_regE;
 input iBranch_regE;
 //input ibranch_addr_RegE_r;
 
-output reg [1:0] obp_predict;
+output [1:0] obp_predict;
 //output reg obp_flush;
 
 wire beq_secc, beq_inst;
 reg [1:0] bp_state, nxt_state;
 reg pre_regD, pre_regE;
+reg [1:0] bp_predict;
+
+assign obp_predict = bp_predict;
 
 assign beq_secc = (iBranch_regE & izero_regE);
-assign beq_inst = (iInstruction[31:26] == 6'd4);
+assign beq_inst = (iInstruction[31:26] == 4);
 
 always@ (*) begin//STATE TRANSITION
     nxt_state = bp_state;
@@ -40,12 +43,14 @@ always@ (*) begin//STATE TRANSITION
 end
 
 always@ (*) begin//O/P CTRL
-    if(iBranch_regE|beq_inst) begin
-        obp_predict[0] = bp_state[1];
-        obp_predict[1] = (pre_regE != beq_secc);
+    if(pre_regE != beq_secc) begin
+        bp_predict[1] = 1;
+        bp_predict[0] = bp_state[1];
+    end else if(beq_inst) begin
+        bp_predict[0] = 0;
+        bp_predict[0] = bp_state[1];    
     end else
-        obp_predict = 2'b00;
-    
+        bp_predict = 2'b00;
 end
 
 
@@ -56,8 +61,10 @@ always @(posedge clk or negedge rst_n) begin
         pre_regE <= 0;
     end else begin
         bp_state <= nxt_state;
-        pre_regD <= obp_predict;
+        pre_regD <= bp_predict;
         pre_regE <= pre_regD;
     end
 end
-endmodule // branch_predict
+
+endmodule
+
