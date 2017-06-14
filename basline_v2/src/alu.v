@@ -15,16 +15,18 @@ module alu(
     output reg [31:0] out;
 	output reg zero;
 	
-	wire [32:0] out_add, out_sub;
+	wire [31:0] out_add, out_sub;
 	wire [31:0] out_0, out_1;
 	wire carry_0, carry_1;
 	wire [63:0] shift_right_64;
     
-assign out_add = {1'b0, x[31:0]} + {1'b0, y[31:0]};
+// assign out_add = {x[31], x[31:0]} + {y[31], y[31:0]};
+assign out_add = x + y;
 assign out_0 = out_add[31:0];
 assign carry_0 = out_add[32];
 
-assign out_sub = {1'b0, x[31:0]} + (~{1'b0, y[31:0]}) + 1;
+// assign out_sub = {x[31], x[31:0]} + (~{y[31], y[31:0]}) + 1;
+assign out_sub = x - y;
 assign out_1 = out_sub[31:0];
 assign carry_1 = out_sub[32];
 

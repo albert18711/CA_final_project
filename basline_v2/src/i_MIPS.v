@@ -352,7 +352,7 @@ module MIPS_Pipeline (
 // branch_addr
     // assign branch_addr = PCPlus4_RegF_r + ExtOut;
 //========== ID_EXE register ======================================//
-    assign funct_RegD_w       = IR_RegF_r[5:0]; // can use ExtOut instead
+    assign funct_RegD_w       = (ALUOp == 2'b11)? IR_RegF_r[31:26] : IR_RegF_r[5:0]; // can use ExtOut instead
     assign Rs_RegD_w          = Rs;
     assign Rt_RegD_w          = Rt;
     assign A_RegD_w           = (JAL)? PCPlus4_RegF_r : A;

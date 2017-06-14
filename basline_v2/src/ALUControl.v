@@ -15,6 +15,7 @@ output       	 oJR;      //JR
 assign oJR = (iALUOp == 01 && iIR_func == 4'b1000)? 1 : 0;
 
 always@ (*) begin
+	oALUctrl = 0;
 	if(iALUOp == 2'b00) oALUctrl = 0;
 	else if(iALUOp == 2'b10) oALUctrl = 1; // beq
 	else if(iALUOp == 2'b01) begin
@@ -32,9 +33,15 @@ always@ (*) begin
 			default: oALUctrl = 0;
 		endcase
 	end
+	// else if(iIR_opcode == 8  || iIR_opcode == 12 || iIR_opcode == 13 ||
+		    // iIR_opcode == 14 || iIR_opcode == 10) oALUOp = 2'b11; // I type 
 	else if(iALUOp == 2'b11) begin // I type
 		case (iIR_func) // actually is OP-field
-			
+			6'd8 : oALUctrl = 0; // ADDI
+			6'd12: oALUctrl = 2; // ANDI
+			6'd13: oALUctrl = 3; // ORI
+			6'd14: oALUctrl = 5; // XORI
+			6'd10: oALUctrl = 4; // SLTI
 			default : oALUctrl = 0;
 		endcase
 	end

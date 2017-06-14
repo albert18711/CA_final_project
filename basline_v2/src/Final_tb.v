@@ -150,7 +150,7 @@ module Final_tb;
 		#2 rst_n = 1'b0;
 		#(`CYCLE*8.5) rst_n = 1'b1;
      
-		#(`CYCLE*10000)	 $finish; // calculate clock cycles for all operation
+		#(`CYCLE*50000)  $finish; // calculate clock cycles for all operation
 		$display("-----------------------------------------------------\n");
 		$display("Error!!! There is something wrong with your code ...!\n");
 	 	$display("------The test result is .....FAIL ------------------\n");
