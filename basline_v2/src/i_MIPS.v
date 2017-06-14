@@ -617,13 +617,16 @@ module MIPS_Pipeline (
 //========== WB ===================================================//
 // debug
     // always @(*) begin
-    //     if(wsel_RegM_r == 29 && RegWrite_RegM_r == 1) begin
-    //         $display("write to $29, addr = %d", PC_r);
-    //         $display("value = %h", WriteData);
-    //     end
-    //     if(JR && Rs == 29) begin
-    //         $display("JR to $29, addr = %h", ICACHE_addr);
-    //         $display("value = %h", A);
+    //     // if(wsel_RegM_r == 29 && RegWrite_RegM_r == 1) begin
+    //     //     $display("write to $29, addr = %d", PC_r);
+    //     //     $display("value = %h", WriteData);
+    //     // end
+    //     // if(JR && Rs == 29) begin
+    //     //     $display("JR to $29, addr = %h", ICACHE_addr);
+    //     //     $display("value = %h", A);
+    //     // end
+    //     if(Branch_RegE_r == 1 && zero_RegE_r == 1) begin
+    //         $display("Branch to %d", branch_addr_RegE_r[31:2]);
     //     end
     // end
 
