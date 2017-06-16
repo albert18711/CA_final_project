@@ -76,7 +76,7 @@ module MIPS_Pipeline (
     wire        JAL;
     wire        JR;
 
-    wire        branch_predict;
+    wire [1:0]  branch_predict;
     // wire [31:0] IR_RegF;
     wire        wen;
     wire        flushifdec;
@@ -202,10 +202,10 @@ module MIPS_Pipeline (
 // PCSrcLogic: i/p {JR_regE_r, zero_regE_r, Branch_sel, Jump}
     always @(*) begin
         // if(zero_RegE_r & Branch_RegE_r)  PCSrc = 2'b01;
-        if(branch_predict[0])            PCSrc = 2'b01;
-        else if(Jump)                    PCSrc = 2'b10;
-        else if(JR_RegE_r)               PCSrc = 2'b11;
-        else                             PCSrc = 2'b00;
+        if(branch_predict[0] | branch_predict[1])   PCSrc = 2'b01;
+        else if(Jump)                               PCSrc = 2'b10;
+        else if(JR_RegE_r)                          PCSrc = 2'b11;
+        else                                        PCSrc = 2'b00;
     end
 
 // PC_Mux
@@ -236,7 +236,7 @@ module MIPS_Pipeline (
     assign target_address = IR_RegF_r[25:0];
 	always @(*) begin
 		PCPlus4     = addr_in + 4;
-		branch_addr = branch_addr_RegE_r;
+		branch_addr = (branch_predict[1])? branch_addr_RegE_r : branch_addr_RegD_w;
 		jump_addr   = {PC_r[31:28], target_address, 2'b00};
 	end
 

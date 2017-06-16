@@ -26,8 +26,8 @@
 	`include "./TestBed_hasHazard.v"
 `endif
 `ifdef BrPred
-	`define IMEM_INIT "I_mem_BrPred"
-	`include "./TestBed_BrPred.v"
+	`define IMEM_INIT "./generate/I_mem_BrPred"
+	`include "./generate/TestBed_BrPred.v"
 `endif
 `ifdef L2Cache
 	`define IMEM_INIT "I_mem_L2Cache"

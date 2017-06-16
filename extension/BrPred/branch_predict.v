@@ -40,9 +40,10 @@ always@ (*) begin//STATE TRANSITION
 end
 
 always@ (*) begin//O/P CTRL
-    if(iBranch_regE|beq_inst) begin
-        obp_predict[0] = bp_state[1];
+    if(beq_secc) begin
         obp_predict[1] = (pre_regE != beq_secc);
+    end else if(beq_secc | beq_inst) begin
+        obp_predict[0] = bp_state[1];
     end else
         obp_predict = 2'b00;
     
@@ -56,7 +57,7 @@ always @(posedge clk or negedge rst_n) begin
         pre_regE <= 0;
     end else begin
         bp_state <= nxt_state;
-        pre_regD <= obp_predict;
+        pre_regD <= (obp_predict[0] & ~(obp_predict[1]));
         pre_regE <= pre_regD;
     end
 end

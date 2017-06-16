@@ -29,7 +29,7 @@ input           iJAL;
 input [31:0]    iInstruction;
 // input           izero_RegE;
 // input           iBranch_RegE;
-input           ibranch_predict;
+input [1:0]     ibranch_predict;
 
 output reg      ostall_dec;
 output reg      oflushexmem;
@@ -59,6 +59,9 @@ always@ (*) begin//C
         oflushifdec = 1;
         oflushdecex = 1;
         oflushexmem = 1;
+    end
+    else if(ibranch_predict[0]) begin
+        oflushifdec = 1;
     end
     // if(beq_secc) begin
     //     oflushifdec = 1;
