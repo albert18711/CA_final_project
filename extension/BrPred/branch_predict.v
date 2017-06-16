@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 module branch_predict(
 //i/p    
     clk,
