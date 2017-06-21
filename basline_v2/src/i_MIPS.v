@@ -300,7 +300,7 @@ module MIPS_Pipeline (
         );
 // mCtrl to ID/EXE MUX
     always @(*) begin
-        if(~stall_dec) begin
+        if(~stall_dec & ~flushdecex) begin
             ALUOp_RegD_w    = ALUOp;
             MemWrite_RegD_w = MemWrite;
             MemToReg_RegD_w = MemToReg;
@@ -358,8 +358,8 @@ module MIPS_Pipeline (
     assign A_RegD_w           = (JAL)? PCPlus4_RegF_r : A;
     assign B_RegD_w           = B;
     assign ExtOut_RegD_w      = ExtOut;
-    assign JAL_RegD_w         = JAL;
-    assign JR_RegD_w          = JR;
+    assign JAL_RegD_w         = (flushdecex)? 0 : JAL;
+    assign JR_RegD_w          = (flushdecex)? 0 : JR;
     assign branch_addr_RegD_w = PCPlus4_RegF_r + {{14{immediate[15]}}, immediate, 2'b00};
     always @(posedge clk or negedge rst_n) begin
         if(~rst_n) begin
@@ -396,23 +396,23 @@ module MIPS_Pipeline (
             JAL_RegD_r          <= JAL_RegD_r; 
             JR_RegD_r           <= JR_RegD_r;
             branch_addr_RegD_r  <= branch_addr_RegD_r;
-        end else if(flushdecex) begin
-            Branch_RegD_r       <= 0;
-            RegWrite_RegD_r     <= 0;
-            MemToReg_RegD_r     <= 0;
-            MemWrite_RegD_r     <= 0;
-            ALUOp_RegD_r        <= 0;
-            funct_RegD_r        <= 0;
-            A_RegD_r            <= 0;
-            ALUSrc_RegD_r       <= 0;
-            ExtOut_RegD_r       <= 0;
-            B_RegD_r            <= 0;
-            wsel_RegD_r         <= 0;
-            Rs_RegD_r           <= 0;
-            Rt_RegD_r           <= 0;
-            JAL_RegD_r          <= 0;
-            JR_RegD_r           <= 0;
-            branch_addr_RegD_r  <= 0;
+        // end else if(flushdecex) begin
+        //     Branch_RegD_r       <= 0;
+        //     RegWrite_RegD_r     <= 0;
+        //     MemToReg_RegD_r     <= 0;
+        //     MemWrite_RegD_r     <= 0;
+        //     ALUOp_RegD_r        <= 0;
+        //     funct_RegD_r        <= 0;
+        //     A_RegD_r            <= 0;
+        //     ALUSrc_RegD_r       <= 0;
+        //     ExtOut_RegD_r       <= 0;
+        //     B_RegD_r            <= 0;
+        //     wsel_RegD_r         <= 0;
+        //     Rs_RegD_r           <= 0;
+        //     Rt_RegD_r           <= 0;
+        //     JAL_RegD_r          <= 0;
+        //     JR_RegD_r           <= 0;
+        //     branch_addr_RegD_r  <= 0;
         end else begin
             Branch_RegD_r       <= Branch_RegD_w;
             RegWrite_RegD_r     <= RegWrite_RegD_w;
@@ -489,17 +489,17 @@ module MIPS_Pipeline (
 
 //========== EXE_MEM register =====================================//
     // assign JR_RegE         = JR_RegE_r;
-    assign Branch_RegE_w        = Branch_RegD_r;
+    assign Branch_RegE_w        =(flushexmem)? 0 : Branch_RegD_r;
     // assign Branch_RegE          = Branch_RegE_r;
-    assign zero_RegE_w          = zero;
+    assign zero_RegE_w          =(flushexmem)? 0 : zero;
     // assign zero_RegE            = zero_RegE_r;
-    assign JR_RegE_w            = JR_RegD_r;
-    assign MemToReg_RegE_w      = MemToReg_RegD_r;
-    assign MemWrite_RegE_w      = MemWrite_RegD_r;
+    assign JR_RegE_w            =(flushexmem)? 0 : JR_RegD_r;
+    assign MemToReg_RegE_w      =(flushexmem)? 0 : MemToReg_RegD_r;
+    assign MemWrite_RegE_w      =(flushexmem)? 0 : MemWrite_RegD_r;
     assign alu_out_RegE_w       = alu_out;
     assign B_RegE_w             = B_FUSel;
     // assign ExtOut_RegE_w        = {ExtOut_RegD_r[15:2], 2'b0};
-    assign RegWrite_RegE_w      = RegWrite_RegD_r;
+    assign RegWrite_RegE_w      =(flushexmem)? 0 : RegWrite_RegD_r;
     assign wsel_RegE_w          = wsel_RegD_r;
     assign branch_addr_RegE_w   = branch_addr_RegD_r;
 
@@ -528,18 +528,18 @@ module MIPS_Pipeline (
             RegWrite_RegE_r     <= RegWrite_RegE_r;
             wsel_RegE_r         <= wsel_RegE_r;
             branch_addr_RegE_r  <= branch_addr_RegE_r;
-        end else if(flushexmem) begin
-            Branch_RegE_r       <= 0;
-            zero_RegE_r         <= 0;
-            JR_RegE_r           <= 0;
-            MemToReg_RegE_r     <= 0;
-            MemWrite_RegE_r     <= 0;
-            alu_out_RegE_r      <= 0;
-            B_RegE_r            <= 0;
-            // ExtOut_RegE_r       <= 0;
-            RegWrite_RegE_r     <= 0;
-            wsel_RegE_r         <= 0;
-            branch_addr_RegE_r  <= 0;
+        // end else if(flushexmem) begin
+        //     Branch_RegE_r       <= 0;
+        //     zero_RegE_r         <= 0;
+        //     JR_RegE_r           <= 0;
+        //     MemToReg_RegE_r     <= 0;
+        //     MemWrite_RegE_r     <= 0;
+        //     alu_out_RegE_r      <= 0;
+        //     B_RegE_r            <= 0;
+        //     // ExtOut_RegE_r       <= 0;
+        //     RegWrite_RegE_r     <= 0;
+        //     wsel_RegE_r         <= 0;
+        //     branch_addr_RegE_r  <= 0;
         end else begin
             Branch_RegE_r       <= Branch_RegE_w;
             zero_RegE_r         <= zero_RegE_w;
