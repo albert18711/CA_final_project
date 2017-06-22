@@ -1,6 +1,6 @@
 `include "i_MIPS.v"
 `include "cache_dirtyBit.v"
-`include "cache_dirtyBit_L2.v"
+`include "L2cache_FIFObuffer2.v"
 // Top module of your design, you cannot modify this module!!
 module CHIP (	clk,
 				rst_n,
