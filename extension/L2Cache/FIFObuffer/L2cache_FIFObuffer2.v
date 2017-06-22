@@ -45,7 +45,7 @@ module L2_Cache(
     reg L2_ready_reg;
     reg [127:0]  L2_rdata_reg;
 
-    reg buffer_write_w, buffer_write_r;
+    // reg buffer_write_w, buffer_write_r;
 
     reg mem_read_r, mem_read_w;
     reg mem_write_r, mem_write_w;
@@ -105,7 +105,6 @@ module L2_Cache(
         FIFO_hit = 0;
         FIFO_rdata = 0;
         for (j = 0; j < 16; j = j+1) begin
-            buffer_w[j] = buffer_r[j];
             if(buffer_r[j][155:128] == L2_addr & buffer_r[j][156]) begin
                 if(L2_read)
                     FIFO_rdata = buffer_r[j][127:0];
@@ -116,32 +115,38 @@ module L2_Cache(
         end
     end
 
-    // FIFO write to mem
-    always @(*) begin
-        if(mem_ready) begin
-            if(~mem_read_r & buffer_r[15][151]) begin
-                mem_write_w   = 1;
-                mem_read_w    = 0;
-                mem_addr_w    = buffer_r[15][155:128];
-                mem_wdata_w   = buffer_r[15][127:0];
-            end
-        end
-    end
+    // FIFO write
+    // always @(*) begin
+        
+    // end
 
-    always @(posedge clk or posedge reset) begin
-        if(reset) begin
-            for (i = 0; i < 16; i = i+1) begin
-                buffer_r[i] <= 0;
-            end
-        end else begin
-            for (i = 0; i < 15; i = i+1) begin
-                if(buffer_write_r)
-                    buffer_r[i + 1] <= buffer_w[i];
-                else
-                    buffer_r[i]     <= buffer_w[i];
-            end
-        end
-    end
+    // // FIFO write to mem
+    // always @(*) begin
+    //     mem_write_w = 0;
+    //     mem_read_w = 0;
+    //     if(state_r != 1 && buffer_r[15][151]) begin
+    //         mem_write_w   = 1;
+    //         mem_read_w    = 0;
+    //         mem_addr_w    = buffer_r[15][155:128];
+    //         mem_wdata_w   = buffer_r[15][127:0];
+    //         buffer_w[15]  = 0; // final FIFO is stored and become empty
+    //     end
+    // end
+
+    // always @(posedge clk or posedge reset) begin
+    //     if(reset) begin
+    //         for (i = 0; i < 16; i = i+1) begin
+    //             buffer_r[i] <= 0;
+    //         end
+    //     end else begin
+    //         for (i = 0; i < 15; i = i+1) begin
+    //             if(buffer_write_r)
+    //                 buffer_r[i + 1] <= buffer_w[i];
+    //             else
+    //                 buffer_r[i]     <= buffer_w[i];
+    //         end
+    //     end
+    // end
 
 /*
 always @(posedge clk or posedge reset) begin
@@ -208,9 +213,9 @@ end
             dirty_bit_w[i] = dirty_bit_r[i];
         end
 
-        for (i = 0; i < 16; i = i+1) begin
-            buffer_w[i] = buffer_r[i];
-        end
+        // for (i = 0; i < 16; i = i+1) begin
+        //     buffer_w[i] = buffer_r[i];
+        // end
 
         case (state_r)
             S_HIT: begin
@@ -218,16 +223,16 @@ end
                     state_w = S_MISS;
                     L2_ready_reg = 0;
                     // miss_counter_w = miss_counter_r + 1;
-                    if(valid_bit_r[i_cache_index] & dirty_bit_r[i_cache_index]) begin
-                        mem_read_w = 0;
-                        //mem_write_w = 1;
-                        buffer_write_w = 1;
-                        buffer_w[0][151]        = 1;
-                        buffer_w[0][150:128]    = tag_r[i_cache_index];
-                        buffer_w[0][127:0]      = four_word_r[i_cache_index];
+                    if(buffer_full) begin
+                        mem_write = 1;
+                        mem_read = 0;
+                        mem_addr_w = buffer_r[15][155:128];
+                        mem_wdata_w = buffer_r[15][127:0];
                     end
+
                     // else begin
                     mem_read_w = 1;
+                    mem_write_w = 0;
                     // buffer_write_w = 0;
                     mem_addr_w = L2_addr[27:0];
                     // end
@@ -268,20 +273,37 @@ end
             end
             S_MISS: begin
                 L2_ready_reg = 0;
-                if(mem_ready) begin
-                    mem_read_w = 0;
+                if(valid_bit_r[i_cache_index] & dirty_bit_r[i_cache_index] & ~buffer_write_r) begin
+                    // mem_read_w = 0;
+                    //mem_write_w = 1;
+                    buffer_write_w = 1;
+                    buffer_w[0][151]        = 1;
+                    buffer_w[0][150:128]    = tag_r[i_cache_index];
+                    buffer_w[0][127:0]      = four_word_r[i_cache_index];
+
+                    mem_read_w = 1;
                     mem_write_w = 0;
-                    if(buffer_write_r && ~mem_read_r) begin
-                        state_w = S_MISS;
-                        mem_addr_w = L2_addr[27:0];
-                        buffer_write_w = 0;
-                        mem_write_w = 0;
-                        mem_read_w = 1;
-                    end else begin
+                    mem_addr_w = L2_addr;
+                    state_w = S_MISS;
+                end else begin
+                    // buffer_write_w = 0;
+                    if(mem_ready) begin
                         tag_w[i_cache_index] = i_tag;
                         four_word_w[i_cache_index] = mem_rdata;
                         valid_bit_w[i_cache_index] = 1;
                         state_w = S_HIT;
+                        // end else begin
+                        // end
+                        // mem_read_w = 0;
+                        // mem_write_w = 0;
+                        // if(buffer_write_r && ~mem_read_r) begin
+                        //     state_w = S_MISS;
+                        //     mem_addr_w = L2_addr[27:0];
+                        //     buffer_write_w = 0;
+                        //     mem_write_w = 0;
+                        //     mem_read_w = 1;
+                        // end else begin
+                        // end
                     end
                 end
             end
@@ -314,7 +336,10 @@ always@( posedge clk or posedge reset ) begin
         mem_addr_r <= 0;
         mem_wdata_r <= 0;
         state_r <= S_HIT;
-        buffer_write_r <= 0;
+        // buffer_write_r <= 0;
+        for (i = 0; i < 16; i = i+1) begin
+            buffer_r[i] <= 0;
+        end
         // miss_counter_r <= 0;
     end
     else begin
@@ -329,7 +354,13 @@ always@( posedge clk or posedge reset ) begin
         mem_read_r <= mem_read_w;
         mem_addr_r <= mem_addr_w;
         mem_wdata_r <= mem_wdata_w;
-        buffer_write_r <= buffer_write_w;
+        // buffer_write_r <= buffer_write_w;
+        for (i = 0; i < 15; i = i+1) begin
+            if(FIFO_hit)
+                buffer_r[i] = buffer_w[i];
+            else
+                buffer_r[i + 1] = buffer_w[i];
+        end
         // miss_counter_r <= miss_counter_w;
     end
 end
