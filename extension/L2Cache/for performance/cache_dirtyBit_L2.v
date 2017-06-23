@@ -108,8 +108,9 @@ end
 always@(*) begin
     if(reset) totaltime_w <= 0;
     else if(L2_read || L2_write) begin
-        if(~L2_ready) totaltime_w = totaltime_r + 1;
-        else totaltime_w = totaltime_r;
+        // if(~L2_ready) totaltime_w = totaltime_r + 1;
+        // else totaltime_w = totaltime_r;
+        totaltime_w = totaltime_r + 1;
     end else begin
         totaltime_w = totaltime_r;
     end
@@ -117,7 +118,8 @@ end
 
 always@(*) begin
     if(reset) stallcycle_w = 0;
-    else if(mem_write || mem_read) stallcycle_w = stallcycle_r + 1;
+    // else if(mem_write || mem_read) stallcycle_w = stallcycle_r + 1;
+    else if(~L2_read) stallcycle_w = stallcycle_r + 1;
     else stallcycle_w = stallcycle_r;
 end
 
