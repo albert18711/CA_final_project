@@ -100,8 +100,7 @@ module L2_Cache(
 
 always@(*) begin
     if(reset) hittime_w = 0;
-    else if(hit && L2_read) hittime_w = hittime_r + 1;
-    else if(hit && L2_write) hittime_w = hittime_r + 1;
+    else if(hit) hittime_w = hittime_r + 1;
     else hittime_w = hittime_r;
 end
 
